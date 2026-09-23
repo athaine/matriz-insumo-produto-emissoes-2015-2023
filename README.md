@@ -1,5 +1,4 @@
-[README (2).md](https://github.com/user-attachments/files/32563364/README.2.md)
-# EEIO Brasil 2015–2023: matriz insumo-produto, emissões e encadeamento setorial
+# Brasil 2015–2023: matriz insumo-produto, emissões e encadeamento setorial
 
 Modelo insumo-produto ambientalmente estendido (EEIO), híbrido, para 12
 setores da economia brasileira, integrando a Tabela de Usos do IBGE (2015 e
