@@ -1,4 +1,5 @@
-# Brasil 2015–2023: matriz insumo-produto, emissões e encadeamento setorial
+[README (2).md](https://github.com/user-attachments/files/32563364/README.2.md)
+# EEIO Brasil 2015–2023: matriz insumo-produto, emissões e encadeamento setorial
 
 Modelo insumo-produto ambientalmente estendido (EEIO), híbrido, para 12
 setores da economia brasileira, integrando a Tabela de Usos do IBGE (2015 e
@@ -103,7 +104,7 @@ src/
   seeg_mapping.py        mapeamento SEEG -> 12 setores
   eeio_model.py           coeficientes de emissão, multiplicador total, encadeamento
   compare_years.py        comparação relativa 2015 vs 2023 (resultado principal)
-  sda.py                   decomposição estrutural -- módulo experimental 
+  sda.py                   decomposição estrutural -- módulo experimental, ver limitações
 outputs/                CSVs de resultado gerados pelos scripts
 ```
 
@@ -143,5 +144,8 @@ existir -- não precisa criá-la manualmente.
 
 - IBGE, Contas Nacionais — Tabela de Usos de Bens e Serviços (agregação
   própria a 12 setores).
+  <https://www.ibge.gov.br/estatisticas/economicas/contas-nacionais/9052-sistema-de-contas-nacionais-brasil.html?edicao=44968>. Anos utilizados: (2015 e 2023).
 - SEEG (Sistema de Estimativas de Emissões e Remoções de Gases de Efeito
   Estufa), Observatório do Clima — emissões por categoria/subcategoria.
+  <https://plataforma.seeg.eco.br/?yearRange%5B0%5D=2023&yearRange%5B1%5D=2023&sector%5B0%5D=477&sector%5B1%5D=449&emissionType%5B0%5D=1&gas=49&groupBy=Subcategory&rankBy=State&filtersTab=filters&statisticsTab=historical>
+  Anos utilizados: (2015 e 2023).
