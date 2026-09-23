@@ -1,4 +1,4 @@
-# EEIO Brasil 2015–2023: matriz insumo-produto, emissões e encadeamento setorial
+# Brasil 2015–2023: matriz insumo-produto, emissões e encadeamento setorial
 
 Modelo insumo-produto ambientalmente estendido (EEIO), híbrido, para 12
 setores da economia brasileira, integrando a Tabela de Usos do IBGE (2015 e
@@ -46,25 +46,29 @@ de cada ano, que não dependem de deflação para serem comparáveis. Essa é um
 escolha metodológica deliberada, não uma limitação escondida: ela evita
 justamente o problema de misturar efeito-preço com efeito-estrutura.
 
-## O que este projeto NÃO faz (por decisão, não por lacuna)
+## Escopo do modelo
 
-- **Mudança de Uso da Terra e Floresta (LULUCF) está fora do escopo.** É a
-  maior categoria do SEEG (mais da metade do total nacional de GEE), mas não
-  corresponde a uma atividade produtiva na estrutura de insumo-produto — não
-  há setor "comprador de insumos" ao qual associá-la sem forçar a
-  metodologia. O modelo cobre emissões de Energia, Processos Industriais e
-  Agropecuária mapeáveis aos 12 setores (~95% desse subconjunto). Ver
-  `src/seeg_mapping.py` para a lista completa de inclusões/exclusões.
-- **Decomposição estrutural (SDA) em valores absolutos não é um resultado
-  deste projeto.** Há um módulo experimental (`src/sda.py`) que implementa o
-  método corretamente (2-polar average, Dietzenbacher & Los 1998, com
-  resíduo de 3ª ordem reportado explicitamente), mas seus números dependem
-  de deflatores setoriais que este projeto ainda não incorpora — sem eles, o
-  resultado mistura inflação com mudança estrutural real. Está no repositório
-  como prova de método, não como conclusão.
-- **12 setores é uma agregação grosseira.** Os índices de encadeamento e a
-  identificação de setores-chave são indicativos no nível macro, não uma
-  análise setorial fina.
+Este projeto modela emissões associadas à estrutura produtiva da economia —
+Energia, Processos Industriais e Agropecuária —, cobrindo ~95% desse
+subconjunto do SEEG mapeável aos 12 setores da Tabela de Usos do IBGE (ver
+`src/seeg_mapping.py` para o mapeamento completo).
+
+Mudança de Uso da Terra e Floresta não é modelada dentro do arcabouço de
+Leontief: é a maior categoria de emissões do Brasil, mas não corresponde a
+uma atividade que compra e vende insumos na matriz de usos — por isso, na
+literatura de EEIO, costuma ser tratada à parte de exercícios baseados em
+insumo-produto, e não incorporada a um setor específico.
+
+## Extensões planejadas
+
+- **Decomposição estrutural (SDA) em termos reais**: o método já está
+  implementado em `src/sda.py` (2-polar average, Dietzenbacher & Los, 1998,
+  com o resíduo de 3ª ordem reportado explicitamente). A próxima etapa é
+  incorporar deflatores setoriais do IBGE para tornar os efeitos
+  (intensidade de emissão, estrutura produtiva, demanda final) comparáveis
+  em termos reais entre 2015 e 2023.
+- Nível de agregação setorial mais fino que os 12 setores atuais.
+- Notebook único consolidando a análise com visualizações.
 
 ## Metodologia
 
@@ -94,7 +98,7 @@ src/
   seeg_mapping.py        mapeamento SEEG -> 12 setores
   eeio_model.py           coeficientes de emissão, multiplicador total, encadeamento
   compare_years.py        comparação relativa 2015 vs 2023 (resultado principal)
-  sda.py                   decomposição estrutural -- módulo experimental, ver limitações
+  sda.py                   decomposição estrutural (SDA) -- ver "Extensões planejadas"
 outputs/                CSVs de resultado gerados pelos scripts
 ```
 
@@ -107,12 +111,17 @@ python load_io.py          # sanity check da matriz A (soma < 1 por setor)
 python seeg_mapping.py      # sanity check da cobertura do mapeamento SEEG
 python eeio_model.py         # gera summary_2015.csv, summary_2023.csv, direct_indirect_*.csv
 python compare_years.py       # gera comparacao_relativa_2015_2023.csv -- resultado principal
-python sda.py                  # módulo experimental (ver limitações acima)
+python sda.py                  # decomposição estrutural (ver "Extensões planejadas" no README)
 ```
 
 ## Dados e fontes
 
-- IBGE, Contas Nacionais — Tabela de Usos de Bens e Serviços (agregação
-  própria a 12 setores).
-- SEEG (Sistema de Estimativas de Emissões e Remoções de Gases de Efeito
-  Estufa), Observatório do Clima — emissões por categoria/subcategoria.
+- **IBGE — Sistema de Contas Nacionais do Brasil**, Tabela de Usos de Bens e
+  Serviços (agregação própria a 12 setores):
+  https://www.ibge.gov.br/estatisticas/economicas/contas-nacionais/9052-sistema-de-contas-nacionais-brasil.html?edicao=44968
+- **SEEG** (Sistema de Estimativas de Emissões e Remoções de Gases de Efeito
+  Estufa), Observatório do Clima — emissões por categoria/subcategoria:
+  https://plataforma.seeg.eco.br/?yearRange%5B0%5D=2023&yearRange%5B1%5D=2023&sector%5B0%5D=477&sector%5B1%5D=449&emissionType%5B0%5D=1&gas=49&groupBy=Subcategory&rankBy=State&filtersTab=filters&statisticsTab=historical
+
+Os arquivos brutos usados neste projeto estão em `data/raw/`, extraídos
+diretamente dessas plataformas.
