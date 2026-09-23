@@ -16,9 +16,11 @@ import pandas as pd
 
 from load_io import (
     load_ci_matrix, load_total_output, build_technical_coefficients,
-    leontief_inverse, SECTOR_CODES, SECTOR_NAMES,
+    leontief_inverse, SECTOR_CODES, SECTOR_NAMES, DATA_DIR, ROOT_DIR,
 )
 from seeg_mapping import build_sector_emission_vector
+
+OUTPUT_DIR = ROOT_DIR / "outputs"
 
 
 def emission_coefficients(emissions: pd.Series, total_output: pd.Series) -> pd.Series:
@@ -105,9 +107,11 @@ if __name__ == "__main__":
     pd.set_option("display.width", 160)
     pd.set_option("display.max_columns", 10)
 
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
     for year, io_path, seeg_path, col in [
-        (2015, "data/raw/12_tab2_2015.xls", "data/raw/SEEG__2015__-_sub_categoria.csv", "2015"),
-        (2023, "data/raw/12_tab2_2023.xls", "data/raw/SEEG__2023__-_subcategorias.csv", "2023"),
+        (2015, DATA_DIR / "12_tab2_2015.xls", DATA_DIR / "SEEG__2015__-_sub_categoria.csv", "2015"),
+        (2023, DATA_DIR / "12_tab2_2023.xls", DATA_DIR / "SEEG__2023__-_subcategorias.csv", "2023"),
     ]:
         res = run_year(io_path, seeg_path, col)
         print(f"=== {year}: resumo por setor ===")
@@ -120,5 +124,5 @@ if __name__ == "__main__":
         print(decomp.round(1))
         print()
 
-        res["summary"].to_csv(f"outputs/summary_{year}.csv")
-        decomp.to_csv(f"outputs/direct_indirect_{year}.csv")
+        res["summary"].to_csv(OUTPUT_DIR / f"summary_{year}.csv")
+        decomp.to_csv(OUTPUT_DIR / f"direct_indirect_{year}.csv")
