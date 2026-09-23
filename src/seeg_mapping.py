@@ -19,7 +19,14 @@ ESCOPO E LIMITAÇÃO METODOLÓGICA (documentada, não escondida):
 - Itens residuais ("Outros", "Uso não-energético de combustíveis e solventes
   em outros setores") são excluídos por ambiguidade de destino setorial.
 """
+from pathlib import Path
+
 import pandas as pd
+
+# Caminhos calculados a partir da localização deste arquivo (não do diretório
+# de onde o script é chamado) -- assim funciona independente de cwd.
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT_DIR / "data" / "raw"
 
 # subcategoria SEEG -> código do setor IBGE (12 setores)
 SUBCATEGORY_TO_SECTOR = {
@@ -107,8 +114,8 @@ def coverage_report(subcategoria_csv_path: str, year_col: str) -> dict:
 
 if __name__ == "__main__":
     for year, path, col in [
-        (2015, "data/raw/SEEG__2015__-_sub_categoria.csv", "2015"),
-        (2023, "data/raw/SEEG__2023__-_subcategorias.csv", "2023"),
+        (2015, DATA_DIR / "SEEG__2015__-_sub_categoria.csv", "2015"),
+        (2023, DATA_DIR / "SEEG__2023__-_subcategorias.csv", "2023"),
     ]:
         vec = build_sector_emission_vector(path, col)
         rep = coverage_report(path, col)
