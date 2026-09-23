@@ -1,6 +1,6 @@
 # Brasil 2015–2023: matriz insumo-produto, emissões e encadeamento setorial
 
-Modelo insumo-produto ambientalmente estendido (EEIO), híbrido, para 12
+Modelo insumo-produto ambientalmente estendido para 12
 setores da economia brasileira, integrando a Tabela de Usos do IBGE (2015 e
 2023) com dados de emissões de GEE do SEEG (Energia, Processos Industriais e
 Agropecuária). Estima coeficientes técnicos, inversa de Leontief, emissões
@@ -11,13 +11,13 @@ emissões entre eles.
 ## Resultados principais
 
 **A Indústria de Transformação é o único setor-chave da economia nos dois
-anos** (alto encadeamento para trás *e* para frente) — concentra ~36% das
+anos** (alto encadeamento para trás *e* para frente), concentra ~36% das
 emissões diretas mapeadas em ambos os anos e é o setor cuja cadeia de
 fornecedores mais amplifica emissões indiretas.
 
 **Transporte foi o setor que mais ganhou peso relativo em emissões**: sua
 participação nas emissões diretas mapeadas subiu de 41,0% (2015) para 48,2%
-(2023), um aumento de 7,2 pontos percentuais — e já era, nos dois anos, o
+(2023), um aumento de 7,2 pontos percentuais e já era, nos dois anos, o
 setor com o maior multiplicador total de emissão (direta + indireta) por
 unidade de demanda final atendida.
 
