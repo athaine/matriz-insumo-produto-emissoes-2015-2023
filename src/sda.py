@@ -26,7 +26,7 @@ variação real de volume/estrutura. Este é um limite explícito do resultado
 import pandas as pd
 import numpy as np
 
-from eeio_model import run_year, total_emission_multiplier
+from eeio_model import run_year, total_emission_multiplier, DATA_DIR, OUTPUT_DIR
 from load_io import load_final_demand
 
 
@@ -85,11 +85,13 @@ def sda_by_sector(e0, L0, y0, e1, L1, y1) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    res15 = run_year("data/raw/12_tab2_2015.xls", "data/raw/SEEG__2015__-_sub_categoria.csv", "2015")
-    res23 = run_year("data/raw/12_tab2_2023.xls", "data/raw/SEEG__2023__-_subcategorias.csv", "2023")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    y15 = load_final_demand("data/raw/12_tab2_2015.xls")["demanda_final_total"]
-    y23 = load_final_demand("data/raw/12_tab2_2023.xls")["demanda_final_total"]
+    res15 = run_year(DATA_DIR / "12_tab2_2015.xls", DATA_DIR / "SEEG__2015__-_sub_categoria.csv", "2015")
+    res23 = run_year(DATA_DIR / "12_tab2_2023.xls", DATA_DIR / "SEEG__2023__-_subcategorias.csv", "2023")
+
+    y15 = load_final_demand(DATA_DIR / "12_tab2_2015.xls")["demanda_final_total"]
+    y23 = load_final_demand(DATA_DIR / "12_tab2_2023.xls")["demanda_final_total"]
 
     result = sda_decompose(res15["e"], res15["L"], y15, res23["e"], res23["L"], y23)
     print("=== SDA agregada 2015 -> 2023 (tCO2e; PREÇOS CORRENTES, ver aviso no docstring) ===")
@@ -105,4 +107,4 @@ if __name__ == "__main__":
     print("\n=== SDA por setor de origem da emissão ===")
     pd.set_option("display.width", 160)
     print(by_sector.round(0))
-    by_sector.to_csv("outputs/sda_by_sector.csv")
+    by_sector.to_csv(OUTPUT_DIR / "sda_by_sector.csv")
