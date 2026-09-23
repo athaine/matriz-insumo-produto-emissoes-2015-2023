@@ -25,7 +25,7 @@ unidade de demanda final atendida.
 para 4,3% de participação nas emissões diretas (-9,0 p.p.). Isso é
 consistente com a mudança na matriz elétrica brasileira entre 2015 (ano de
 crise hídrica, com forte acionamento de térmicas) e 2023 (maior geração
-renovável) — o projeto não testa essa hipótese diretamente, mas o resultado
+renovável), o projeto não testa essa hipótese diretamente, mas o resultado
 é compatível com ela.
 
 **Nenhum outro setor mudou de posição na lista de setores-chave** entre os
