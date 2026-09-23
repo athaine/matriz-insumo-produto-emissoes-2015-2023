@@ -46,29 +46,34 @@ de cada ano, que não dependem de deflação para serem comparáveis. Essa é um
 escolha metodológica deliberada, não uma limitação escondida: ela evita
 justamente o problema de misturar efeito-preço com efeito-estrutura.
 
-## Escopo do modelo
+## Escopo metodológico e extensões planejadas
 
-Este projeto modela emissões associadas à estrutura produtiva da economia —
-Energia, Processos Industriais e Agropecuária —, cobrindo ~95% desse
-subconjunto do SEEG mapeável aos 12 setores da Tabela de Usos do IBGE (ver
-`src/seeg_mapping.py` para o mapeamento completo).
+As decisões abaixo delimitam deliberadamente o que este projeto mede, para
+que cada número reportado tenha lastro metodológico sólido — nenhum
+resultado aqui mistura efeitos que a base de dados não permite separar.
 
-Mudança de Uso da Terra e Floresta não é modelada dentro do arcabouço de
-Leontief: é a maior categoria de emissões do Brasil, mas não corresponde a
-uma atividade que compra e vende insumos na matriz de usos — por isso, na
-literatura de EEIO, costuma ser tratada à parte de exercícios baseados em
-insumo-produto, e não incorporada a um setor específico.
-
-## Extensões planejadas
-
-- **Decomposição estrutural (SDA) em termos reais**: o método já está
-  implementado em `src/sda.py` (2-polar average, Dietzenbacher & Los, 1998,
-  com o resíduo de 3ª ordem reportado explicitamente). A próxima etapa é
-  incorporar deflatores setoriais do IBGE para tornar os efeitos
-  (intensidade de emissão, estrutura produtiva, demanda final) comparáveis
-  em termos reais entre 2015 e 2023.
-- Nível de agregação setorial mais fino que os 12 setores atuais.
-- Notebook único consolidando a análise com visualizações.
+- **Recorte de emissões: Energia, Processos Industriais e Agropecuária,
+  mapeáveis aos 12 setores de produção (~95% de cobertura nesse recorte).**
+  Mudança de Uso da Terra e Floresta (LULUCF) — maior categoria do SEEG em
+  volume — foi deixada fora por não corresponder a uma atividade que compra
+  e vende insumos na estrutura de insumo-produto; incluí-la à força em um
+  único setor (ex.: Agropecuária) distorceria os coeficientes de emissão sem
+  base metodológica. Tratar LULUCF corretamente exigiria estender o modelo
+  com uma conta satélite de uso da terra, fora do escopo desta versão. Lista
+  completa de inclusões/exclusões em `src/seeg_mapping.py`.
+- **SDA (decomposição estrutural) implementado e validado como módulo, com
+  resultado em valores absolutos reservado para a próxima versão.** O método
+  (2-polar average, Dietzenbacher & Los 1998, com resíduo de 3ª ordem
+  reportado explicitamente em `src/sda.py`) está correto e testado; o motivo
+  de não reportar os valores absolutos como resultado principal é que a
+  tabela de 2023 ainda está em preços correntes — próximo passo é
+  incorporar deflatores setoriais (IBGE) para isolar variação real de
+  estrutura de inflação, e então promover o SDA de módulo experimental a
+  resultado do projeto.
+- **Agregação a 12 setores é o nível de resolução da Tabela de Usos do IBGE
+  usada nesta versão.** Suficiente para identificar setores-chave e padrões
+  de encadeamento no nível macro; uma extensão natural é subir para as
+  tabelas de 51 ou 68 setores do IBGE para análise setorial mais fina.
 
 ## Metodologia
 
@@ -98,30 +103,45 @@ src/
   seeg_mapping.py        mapeamento SEEG -> 12 setores
   eeio_model.py           coeficientes de emissão, multiplicador total, encadeamento
   compare_years.py        comparação relativa 2015 vs 2023 (resultado principal)
-  sda.py                   decomposição estrutural (SDA) -- ver "Extensões planejadas"
+  sda.py                   decomposição estrutural -- módulo experimental 
 outputs/                CSVs de resultado gerados pelos scripts
 ```
 
 ## Como rodar
 
+Os caminhos dos arquivos de dados (`data/raw/...`) são resolvidos dentro dos
+próprios scripts a partir da localização de cada arquivo `.py`, e não do
+diretório de onde você chama o `python` -- então os comandos abaixo funcionam
+tanto rodados da raiz do projeto quanto de dentro de `src/`.
+
+Da raiz do projeto:
+
 ```bash
 pip install -r requirements.txt
-cd src
-python load_io.py          # sanity check da matriz A (soma < 1 por setor)
-python seeg_mapping.py      # sanity check da cobertura do mapeamento SEEG
-python eeio_model.py         # gera summary_2015.csv, summary_2023.csv, direct_indirect_*.csv
-python compare_years.py       # gera comparacao_relativa_2015_2023.csv -- resultado principal
-python sda.py                  # decomposição estrutural (ver "Extensões planejadas" no README)
+python src/load_io.py          # sanity check da matriz A (soma < 1 por setor)
+python src/seeg_mapping.py      # sanity check da cobertura do mapeamento SEEG
+python src/eeio_model.py         # gera summary_2015.csv, summary_2023.csv, direct_indirect_*.csv
+python src/compare_years.py       # gera comparacao_relativa_2015_2023.csv -- resultado principal
+python src/sda.py                  # módulo experimental (ver limitações acima)
 ```
+
+Ou, se preferir entrar em `src/` primeiro, funciona igual:
+
+```bash
+cd src
+python load_io.py
+python seeg_mapping.py
+python eeio_model.py
+python compare_years.py
+python sda.py
+```
+
+A pasta `outputs/` é criada automaticamente pelos scripts, se ainda não
+existir -- não precisa criá-la manualmente.
 
 ## Dados e fontes
 
-- **IBGE — Sistema de Contas Nacionais do Brasil**, Tabela de Usos de Bens e
-  Serviços (agregação própria a 12 setores):
-  https://www.ibge.gov.br/estatisticas/economicas/contas-nacionais/9052-sistema-de-contas-nacionais-brasil.html?edicao=44968
-- **SEEG** (Sistema de Estimativas de Emissões e Remoções de Gases de Efeito
-  Estufa), Observatório do Clima — emissões por categoria/subcategoria:
-  https://plataforma.seeg.eco.br/?yearRange%5B0%5D=2023&yearRange%5B1%5D=2023&sector%5B0%5D=477&sector%5B1%5D=449&emissionType%5B0%5D=1&gas=49&groupBy=Subcategory&rankBy=State&filtersTab=filters&statisticsTab=historical
-
-Os arquivos brutos usados neste projeto estão em `data/raw/`, extraídos
-diretamente dessas plataformas.
+- IBGE, Contas Nacionais — Tabela de Usos de Bens e Serviços (agregação
+  própria a 12 setores).
+- SEEG (Sistema de Estimativas de Emissões e Remoções de Gases de Efeito
+  Estufa), Observatório do Clima — emissões por categoria/subcategoria.
