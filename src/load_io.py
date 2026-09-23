@@ -9,8 +9,16 @@ O arquivo .xls original tem 3 abas relevantes para este projeto:
 As demais abas (2m02, 2n02, 2o02) são resíduo de um template antigo (nível 56
 setores, ano 2001) e não são usadas aqui.
 """
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
+
+# Caminhos calculados a partir da localização deste arquivo (não do diretório
+# de onde o script é chamado) -- assim "python load_io.py" funciona tanto de
+# dentro de src/ quanto da raiz do projeto, ou de qualquer outro lugar.
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT_DIR / "data" / "raw"
 
 SECTOR_NAMES = {
     "01": "Agropecuária",
@@ -93,7 +101,7 @@ def leontief_inverse(A: pd.DataFrame) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    for year, path in [(2015, "data/raw/12_tab2_2015.xls"), (2023, "data/raw/12_tab2_2023.xls")]:
+    for year, path in [(2015, DATA_DIR / "12_tab2_2015.xls"), (2023, DATA_DIR / "12_tab2_2023.xls")]:
         ci = load_ci_matrix(path)
         x = load_total_output(path)
         A = build_technical_coefficients(ci, x)
